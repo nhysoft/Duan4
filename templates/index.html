@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Face Feature Extractor</title>
+</head>
+<body>
+    <h1>Upload an Image</h1>
+    <form action="/upload" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" accept="image/*" required>
+        <button type="submit">Upload</button>
+    </form>
+    <div id="result">
+        <h2>Result:</h2>
+        <pre id="feature-data"></pre>
+        <img id="avatar" src="" alt="Avatar">
+    </div>
+
+    <script>
+        const form = document.querySelector('form');
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const formData = new FormData(form);
+            const response = await fetch('/upload', {
+                method: 'POST',
+                body: formData
+            });
+            const data = await response.json();
+            if (data.error) {
+                alert('Error: ' + data.error);
+            } else {
+                document.getElementById('feature-data').textContent = JSON.stringify(data.feature_data, null, 2);
+                document.getElementById('avatar').src = data.avatar_url;
+            }
+        });
+    </script>
+</body>
+</html>
